@@ -1072,6 +1072,24 @@ wheels = [
 ]
 
 [[packages]]
+name = "psycopg"
+version = "3.2.13"
+sdist = { url = "https://files.pythonhosted.org/packages/44/05/d4a05988f15fcf90e0088c735b1f2fc04a30b7fc65461d6ec278f5f2f17a/psycopg-3.2.13.tar.gz", upload-time = 2025-11-21T22:34:32Z, size = 160626, hashes = { sha256 = "309adaeda61d44556046ec9a83a93f42bbe5310120b1995f3af49ab6d9f13c1d" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/a9/14/f2724bd1986158a348316e86fdd0837a838b14a711df3f00e47fba597447/psycopg-3.2.13-py3-none-any.whl", upload-time = 2025-11-21T22:29:39Z, size = 206797, hashes = { sha256 = "a481374514f2da627157f767a9336705ebefe93ea7a0522a6cbacba165da179a" } }]
+
+[[packages]]
+name = "psycopg-binary"
+version = "3.2.13"
+marker = "implementation_name != 'pypy'"
+wheels = [{ url = "https://files.pythonhosted.org/packages/06/f5/fc70804a999167daf5b876107b99e8fe91c3f785a31753c0e3e7b93446ba/psycopg_binary-3.2.13-cp311-cp311-macosx_10_9_x86_64.whl", upload-time = 2025-11-21T22:30:25Z, size = 4013844, hashes = { sha256 = "9cfe87749d010dfd34534ba8c71aa0674db9a3fce65232c98989f77c742c9ce7" } }]
+
+[[packages]]
+name = "psycopg-pool"
+version = "3.3.1"
+sdist = { url = "https://files.pythonhosted.org/packages/90/82/7a23d26039827ecd4ebe93905651029ddd307c5182ad59296dfb6f67b528/psycopg_pool-3.3.1.tar.gz", upload-time = 2026-05-01T23:31:59Z, size = 31661, hashes = { sha256 = "b10b10b7a175d5cc1592147dc5b7eec8a9e0834eb3ed2c4a92c858e2f51eb63c" } }
+wheels = [{ url = "https://files.pythonhosted.org/packages/37/ed/89c2c620af0e1660354cd8aabf9f5b21f911597ce22acb37c805d6c86bc8/psycopg_pool-3.3.1-py3-none-any.whl", upload-time = 2026-05-01T23:31:53Z, size = 40023, hashes = { sha256 = "2af5b432941c4c9ad5c87b3fa410aec910ec8f7c122855897983a06c45f2e4b5" } }]
+
+[[packages]]
 name = "ptyprocess"
 version = "0.7.0"
 sdist = { url = "https://files.pythonhosted.org/packages/20/e5/16ff212c1e452235a90aeb09066144d0c5a6a8c0834397e03f5224495c4e/ptyprocess-0.7.0.tar.gz", upload-time = 2020-12-28T15:15:30Z, size = 70762, hashes = { sha256 = "5c5d0a3b48ceee0b48485e0c26037c0acd7d29765ca3fbb5cb3831d347423220" } }
