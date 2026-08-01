@@ -1,0 +1,21 @@
+# Railway build/deploy config for the Chibitek self-hosted OMI backend.
+#
+# Lives at the repo ROOT on purpose: backend/Dockerfile does
+# `COPY backend/pylock.runtime.toml ...`, so its build context is the repository
+# root, not backend/. Setting the service root directory to `backend` makes those
+# COPY paths unresolvable (verified locally: "/backend/pylock.runtime.toml": not
+# found). Leave the service root directory empty and let this file drive the build.
+#
+# Config lives here rather than only in dashboard settings so it is reviewable,
+# version controlled, and survives someone recreating the service.
+
+[build]
+builder = "DOCKERFILE"
+dockerfilePath = "backend/Dockerfile"
+watchPatterns = ["backend/**"]
+
+[deploy]
+healthcheckPath = "/v1/health"
+healthcheckTimeout = 300
+restartPolicyType = "ON_FAILURE"
+restartPolicyMaxRetries = 10
