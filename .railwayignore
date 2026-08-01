@@ -39,7 +39,11 @@ handoff/
 
 # Local tooling
 .git/
-.github/
 .idea/
 .vscode/
 **/.DS_Store
+
+# NOT ignored, deliberately: .github/
+# backend/Dockerfile lines 71-73 COPY three contract modules out of
+# .github/scripts/ into the image. Excluding .github/ fails the build. Verified
+# the hard way -- this file listed it and the build broke on those COPY lines.
