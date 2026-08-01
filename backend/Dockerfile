@@ -1,4 +1,10 @@
-ARG PYTHON_BASE_IMAGE=gcr.io/based-hardware-dev/python:3.11-slim-forky
+# Public Docker Hub base. Upstream defaults this to
+# gcr.io/based-hardware-dev/python:3.11-slim-forky, a PRIVATE Based Hardware
+# registry that returns 403 to anyone outside their org -- so the upstream
+# Dockerfile cannot be built by a fork at all. That is a hard supply-chain
+# dependency on the vendor this deployment exists to be independent of, so the
+# default points at the public equivalent. Still overridable via build arg.
+ARG PYTHON_BASE_IMAGE=python:3.11-slim
 ARG UV_VERSION=0.11.13
 
 FROM ${PYTHON_BASE_IMAGE} AS builder
