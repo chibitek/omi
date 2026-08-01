@@ -21,6 +21,7 @@ from utils import encryption
 from ._client import db, delete_collection_recursive, get_firestore_client, run_transactional
 from .firestore_index_registry import STALE_IN_PROGRESS_CONVERSATIONS_QUERY
 from .helpers import set_data_protection_level, prepare_for_write, prepare_for_read, with_photos
+from .transcript_decode import handle_decode_failure
 from utils.other.storage import list_audio_chunks
 
 logger = logging.getLogger(__name__)
@@ -107,7 +108,7 @@ def _decrypt_conversation_data(conversation_data: Dict[str, Any], uid: str) -> D
             else:
                 data['transcript_segments'] = json.loads(decrypted_payload)
         except (json.JSONDecodeError, TypeError, zlib.error, ValueError) as e:
-            logger.error(f"{e} {uid}")
+            handle_decode_failure(e, uid, data, 'zlib+aes')
             data['transcript_segments'] = []
     # backward compatibility, will be removed soon
     elif isinstance(data['transcript_segments'], bytes):
@@ -117,7 +118,7 @@ def _decrypt_conversation_data(conversation_data: Dict[str, Any], uid: str) -> D
                 decompressed_json = zlib.decompress(compressed_bytes).decode('utf-8')
                 data['transcript_segments'] = json.loads(decompressed_json)
         except (json.JSONDecodeError, TypeError, zlib.error, ValueError) as e:
-            logger.error(f"{e} {uid}")
+            handle_decode_failure(e, uid, data, 'zlib')
             data['transcript_segments'] = []
 
     return data
