@@ -5,6 +5,7 @@ from typing import Any, Literal, Optional, TypedDict
 from google.api_core.exceptions import NotFound
 from google.cloud import firestore
 from google.cloud.firestore_v1 import FieldFilter, transactional
+from . import user_store
 from ._client import db, delete_collection_recursive, document_id_from_seed, get_firestore_client
 from database.firestore_cache import CachePolicy, get_or_fetch, invalidate
 from database.read_boundary import parse_snapshot_or_none, parse_snapshot_strict
@@ -189,48 +190,37 @@ def record_user_platform(uid: str, raw_platform: Optional[str]) -> None:
 
 
 def is_exists_user(uid: str):
-    user_ref = db.collection('users').document(uid)
-    if not user_ref.get().exists:
-        return False
-    return True
+    return user_store.user_exists(uid)
 
 
 def get_user_profile(uid: str) -> dict:
     """Gets the full user profile document."""
-    user_ref = db.collection('users').document(uid)
-    user_doc = user_ref.get()
-    if user_doc.exists:
-        return user_doc.to_dict()
-    return {}
+    return user_store.user_get(uid) or {}
 
 
 def get_user_store_recording_permission(uid: str):
-    user_ref = db.collection('users').document(uid)
-    user_data = user_ref.get().to_dict() or {}
+    user_data = user_store.user_get(uid) or {}
     return user_data.get('store_recording_permission', False)
 
 
 def set_user_store_recording_permission(uid: str, value: bool):
-    user_ref = db.collection('users').document(uid)
-    user_ref.update({'store_recording_permission': value})
+    user_store.user_update(uid, {'store_recording_permission': value})
 
 
 def get_user_private_cloud_sync_enabled(uid: str) -> bool:
     """Check if user has private cloud sync enabled."""
-    user_ref = db.collection('users').document(uid)
-    user_data = user_ref.get().to_dict() or {}
+    user_data = user_store.user_get(uid) or {}
     return user_data.get('private_cloud_sync_enabled', True)
 
 
 def set_user_private_cloud_sync_enabled(uid: str, value: bool):
     """Enable or disable private cloud sync for a user."""
-    user_ref = db.collection('users').document(uid)
-    user_ref.update({'private_cloud_sync_enabled': value})
+    user_store.user_update(uid, {'private_cloud_sync_enabled': value})
 
 
 def set_user_cancellation_feedback(uid: str, reason: str, reason_details: Optional[str] = None):
-    user_ref = db.collection('users').document(uid)
-    user_ref.set(
+    user_store.user_set(
+        uid,
         {
             'cancellation_feedback': {
                 'reason': reason,
@@ -250,8 +240,7 @@ BYOK_HEARTBEAT_TTL_SECONDS = 7 * 24 * 60 * 60  # 7 days
 
 
 def get_byok_state(uid: str) -> dict:
-    user_ref = db.collection('users').document(uid)
-    data = user_ref.get().to_dict() or {}
+    data = user_store.user_get(uid) or {}
     return data.get('byok', {})
 
 
@@ -271,8 +260,8 @@ def is_byok_active(uid: str) -> bool:
 
 
 def set_byok_active(uid: str, fingerprints: dict):
-    user_ref = db.collection('users').document(uid)
-    user_ref.set(
+    user_store.user_set(
+        uid,
         {
             'byok': {
                 'active': True,
@@ -285,8 +274,8 @@ def set_byok_active(uid: str, fingerprints: dict):
 
 
 def clear_byok_active(uid: str):
-    user_ref = db.collection('users').document(uid)
-    user_ref.set(
+    user_store.user_set(
+        uid,
         {
             'byok': {
                 'active': False,

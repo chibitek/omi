@@ -1,0 +1,49 @@
+# Railway only ever builds backend/Dockerfile, whose build context is the repo
+# root (it does `COPY backend/...`). Without this the upload is ~574MB and
+# `railway up` fails outright with "File too large" -- the repo carries a Flutter
+# app, Zephyr firmware, a Tauri desktop app and several web frontends, none of
+# which the Python backend image touches.
+#
+# Keep this in sync with backend/Dockerfile's COPY lines: anything it copies must
+# NOT be listed here.
+
+# Mobile / desktop / firmware clients
+app/
+desktop/
+omi/
+omiGlass/
+
+# Web frontends and SDKs
+web/
+sdks/
+plugins/
+mcp/
+
+# Docs and assets
+docs/
+handoff/
+**/*.png
+**/*.jpg
+**/*.gif
+**/*.mp4
+
+# Build and dependency output
+**/node_modules/
+**/.dart_tool/
+**/build/
+**/dist/
+**/__pycache__/
+**/*.pyc
+**/.venv/
+**/venv/
+
+# Local tooling
+.git/
+.idea/
+.vscode/
+**/.DS_Store
+
+# NOT ignored, deliberately: .github/
+# backend/Dockerfile lines 71-73 COPY three contract modules out of
+# .github/scripts/ into the image. Excluding .github/ fails the build. Verified
+# the hard way -- this file listed it and the build broke on those COPY lines.

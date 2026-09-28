@@ -88,8 +88,10 @@ def user_get(uid: str) -> Optional[Dict[str, Any]]:
     if row is None:
         return None
 
+    from ._json_codec import decode_document
+
     data, level, name, stripe_id = row
-    doc: Dict[str, Any] = dict(data or {})
+    doc: Dict[str, Any] = dict(decode_document(data or {}))
     # Columns win over any stale copy left inside the payload.
     doc["data_protection_level"] = level
     if name is not None:
@@ -124,9 +126,10 @@ def user_set(uid: str, payload: Dict[str, Any], merge: bool = False) -> None:
         return
 
     from . import _pg
+    from ._json_codec import encode_document
     from psycopg.types.json import Jsonb
 
-    cols, rest = _split(payload)
+    cols, rest = _split(encode_document(payload))
     with _pg.connection() as conn:
         if merge:
             # Shallow merge on the payload; promoted columns overwrite only when
@@ -163,9 +166,10 @@ def user_update(uid: str, patch: Dict[str, Any]) -> None:
         return
 
     from . import _pg
+    from ._json_codec import encode_document
     from psycopg.types.json import Jsonb
 
-    cols, rest = _split(patch)
+    cols, rest = _split(encode_document(patch))
     assignments = ["updated_at = now()"]
     values: list[Any] = []
     if rest:
